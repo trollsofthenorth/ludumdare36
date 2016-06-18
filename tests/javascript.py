@@ -16,7 +16,7 @@ class javascriptErrorTest(unittest.TestCase):
         for i in log_types:
             print('====== %s =====' % i)
             for l in self.driver.get_log(i):
-                print(l)
+                print(l['message'])
 
         self.assertTrue(True)
 
