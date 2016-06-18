@@ -9,7 +9,6 @@ services:
 build:
   ci:
     - export DISPLAY=:99.0
-    - xvfb-run --server-args="-ac" echo moo
     - pip install --upgrade pip
     - pip install -r tests/requirements.txt
-    - nosetests tests/javascript.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml 
+    - xvfb-run --server-args="-ac" nosetests tests/javascript.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml 
