@@ -8,7 +8,7 @@ class javascriptErrorTest(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Firefox()
-        self.driver.get('http://localhost:8000')
+        self.driver.get('http://localhost:8000/index.html')
 
     def test(self):
         log_types = ('browser', 'driver', 'client', 'server')
