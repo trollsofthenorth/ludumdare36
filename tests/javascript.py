@@ -9,7 +9,6 @@ class javascriptErrorTest(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.get('http://localhost:8000')
-        self.driver['loggingPrefs'] = { 'browser':'ALL' }
 
     def test(self):
         logs = self.driver.get_log()
