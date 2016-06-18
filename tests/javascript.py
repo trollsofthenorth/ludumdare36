@@ -11,9 +11,13 @@ class javascriptErrorTest(unittest.TestCase):
         self.driver.get('http://localhost:8000')
 
     def test(self):
-        logs = self.driver.get_log('browser')
-        for l in logs:
-            print(l)
+        log_types = ('browser', 'driver', 'client', 'server')
+
+        for i in log_types:
+            print('====== %s =====' % i)
+            for l in self.driver.get_log(i):
+                print(l)
+
         self.assertTrue(True)
 
 
