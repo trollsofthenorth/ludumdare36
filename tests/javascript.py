@@ -11,10 +11,10 @@ class javascriptErrorTest(unittest.TestCase):
         self.driver.get('http://www.google.com')
 
     def test(self):
-        logs = self.driver.get_log('client')
+        logs = self.driver.get_log('browser')
         for l in logs:
             print(l)
-        self.assertTrue(true)
+        self.assertTrue(True)
 
 
     def tearDown(self):
