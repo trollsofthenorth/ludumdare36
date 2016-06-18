@@ -11,4 +11,5 @@ build:
     - export DISPLAY=:99.0
     - pip install --upgrade pip
     - pip install -r tests/requirements.txt
+    - python -m SimpleHTTPServer &
     - xvfb-run --server-args="-ac" nosetests tests/javascript.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml 
