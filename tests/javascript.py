@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 from selenium import webdriver
 import unittest
@@ -22,6 +22,4 @@ class javascriptErrorTest(unittest.TestCase):
 
 
     def tearDown(self):
-        self.driver.quit()
-
-
+        self.driver.close()
