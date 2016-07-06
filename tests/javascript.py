@@ -11,8 +11,12 @@ class javascriptErrorTest(unittest.TestCase):
         self.driver.get('http://localhost:8000/index.html')
 
     def test(self):
-        for e in self.driver.find_element_by_tag_name('body'):
-            print(e.get_attribute('JSError'))
+        e = self.driver.find_element_by_tag_name('body')
+        print(e)
+
+        a = e.get_attribute('JSError')
+        print(a)
+        
 
         self.assertFalse(False)
 
