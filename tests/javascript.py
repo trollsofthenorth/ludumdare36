@@ -11,15 +11,8 @@ class javascriptErrorTest(unittest.TestCase):
         self.driver.get('http://localhost:8000/index.html')
 
     def test(self):
-        log_types = ('browser', 'driver', 'client', 'server')
-
-        for i in log_types:
-            print('====== %s =====' % i)
-            for l in self.driver.get_log(i):
-                print(l['message'])
-
-        self.assertTrue(True)
-
+        print(self.driver.find_element_by_tag_name('body')[0].get_attribute('JSError'))
+        self.assertFalse(False)
 
     def tearDown(self):
         self.driver.close()
