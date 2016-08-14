@@ -5,16 +5,18 @@
     </head>
 
     <body>
+        <div id='error'></div>
         <script type='text/javascript'>
-            window.onerror=function(msg) {
-                document.getElementsByTagName('body')[0].setAttribute("JSError", msg);
-            }
 
             var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {preload: preload, create: create, update: update});
             console.log('this is a test.');
             console.log(e);
 
+            window.onerror = function(msg, url, linenumber, column, errorobject) {
+                document.getElementById('error').innerHTML = 'Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber+'\nColumn: '+column+'\n StackTrace: '+errorobject;
+                return true;
+            }
+ 
         </script>
     </body>
 </html>
-
