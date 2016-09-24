@@ -81,10 +81,10 @@ Lemmings.prototype = {
         this.lemming.animations.add('walker',range(0,7), 10, true);
         this.lemming.animations.add('shrugger',range(8,15), 10, true);
         this.lemming.animations.add('exiter',range(16,24), 10, true);
-        this.lemming.animations.add('black1',range(25,31), 10, true);
+        //this.lemming.animations.add('black1',range(25,31), 10, true);
         this.lemming.animations.add('faller',range(32,35), 10, true);
         this.lemming.animations.add('parachuter',range(36,43), 10, true);
-        this.lemming.animations.add('black2',range(44,47), 10, true);
+        //this.lemming.animations.add('black2',range(44,47), 10, true);
         this.lemming.animations.add('blocker',range(48,63), 10, true);
         this.lemming.animations.add('climber',range(64,71), 10, true);
         this.lemming.animations.add('climber-over',range(72,79), 10, true);
@@ -92,10 +92,10 @@ Lemmings.prototype = {
         this.lemming.animations.add('basher',range(96,127), 10, true);
         this.lemming.animations.add('digger',range(128,135), 10, true);
         this.lemming.animations.add('miner',range(136,159), 10, true);
-        this.lemming.animations.add('dying',range(160,191), 10, true);
-        this.lemming.animations.add('drowning',range(192,207), 10, true);
-        this.lemming.animations.add('tnt',range(208,223), 10, true);
-        this.lemming.play('tnt');
+        this.lemming.animations.add('dyer',range(160,191), 10, true);
+        this.lemming.animations.add('drowner',range(192,207), 10, true);
+        this.lemming.animations.add('exploder',range(208,223), 10, true);
+        this.lemming.play('walker');
 
         this.player = this.add.sprite(160,330,'player');
         this.physics.arcade.enable(this.player);
