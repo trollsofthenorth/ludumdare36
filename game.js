@@ -37,6 +37,10 @@ Lemmings.prototype = {
         //this.load.image('background', 'assets/background.png');
         this.load.image('wall-test', 'assets/level-wall-test-bitmap.png');
         this.load.image('player', 'assets/phaser-dude.png');
+
+        // Adding the spritesheet for a lemming.
+        this.load.spritesheet('lemming', 'assets/spritesheet-lemming.png', 20, 20);
+
     },
 
     create: function () {
@@ -57,6 +61,10 @@ Lemmings.prototype = {
         this.collision.draw("wall-test");
         this.collision.update();
         this.collision.addToWorld();
+
+        this.lemming = this.add.sprite(10,10,'lemming');
+        this.lemming.animations.add('walk',[1,2,3,4,5,6,7], 10, true);
+        this.lemming.play('walk');
 
         this.player = this.add.sprite(160,330,'player');
         this.physics.arcade.enable(this.player);
