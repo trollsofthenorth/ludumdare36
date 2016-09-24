@@ -76,8 +76,8 @@ Lemmings.prototype = {
         this.collision.update();
         this.collision.addToWorld();
 
-        this.lemming = this.add.sprite(10,10,'lemming');
-        this.lemming.alpha=0.5; // This makes the background transparent for the sprite.
+        this.lemming = this.add.sprite(50,50,'lemming');
+        this.lemming.alpha=1; // This makes the background transparent for the sprite.
         this.lemming.animations.add('walker',range(0,7), 10, true);
         this.lemming.animations.add('shrugger',range(8,15), 10, true);
         this.lemming.animations.add('exiter',range(16,24), 10, true);
@@ -96,6 +96,8 @@ Lemmings.prototype = {
         this.lemming.animations.add('drowner',range(192,207), 10, true);
         this.lemming.animations.add('exploder',range(208,223), 10, true);
         this.lemming.play('walker');
+        this.lemming.smoothed=false; // Ensures that we don't blur when scaling.
+        this.lemming.scale.setTo(10,10); // Scale up the image.
 
         this.player = this.add.sprite(160,330,'player');
         this.physics.arcade.enable(this.player);
