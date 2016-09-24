@@ -1,4 +1,11 @@
 
+function range(start, end) {
+  var myArray = [];
+  for (var i = start; i <= end; i += 1) {
+    myArray.push(i);
+  }
+  return myArray;
+}
 
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'startingstate');
@@ -63,8 +70,16 @@ Lemmings.prototype = {
         this.collision.addToWorld();
 
         this.lemming = this.add.sprite(10,10,'lemming');
-        this.lemming.animations.add('walk',[1,2,3,4,5,6,7], 10, true);
-        this.lemming.play('walk');
+        this.lemming.animations.add('walk',range(0,7), 10, true);
+        this.lemming.animations.add('shrug',range(8,15), 10, true);
+        this.lemming.animations.add('climb-over',range(16,24), 10, true);
+        this.lemming.animations.add('black1',range(24,29), 10, true);
+        this.lemming.animations.add('fall',range(30,33), 10, true);
+        this.lemming.animations.add('parachute',range(34,41), 10, true);
+        this.lemming.animations.add('black2',range(42,44), 10, true);
+        this.lemming.animations.add('block',range(45,58), 10, true);
+        this.lemming.animations.add('block',range(45,58), 10, true);
+        this.lemming.play('block');
 
         this.player = this.add.sprite(160,330,'player');
         this.physics.arcade.enable(this.player);
