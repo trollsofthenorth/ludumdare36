@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# ln -s hooks/pre-commit .git/hooks/pre-commit
+
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[0;33m'
+no_color='\033[0m'
+
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep "\.js$")
+
+if [ "$files" != "" ]; then 
+    if [ "$(which jshint)" == "" ]; then
+        echo 'Not validating JavaScript files. To enable, run `npm install -g jshint`'
+    else
+        pass=true
+        >&2 echo "Validating changed JavaScript files: ${files}"
+
+        for file in ${files}; do
+            result=$(jshint ${file} | grep "${file} is OK")
+            if [ "$result" != "" ]; then
+                >&2 echo -e "  ${green}JSLint Passed: ${no_color}${file}"
+            else
+                >&2 echo -e "  ${red}JSLint Failed: ${no_color}${file}"
+                pass=false
+            fi
+        done
+        if ! $pass; then
+            echo -e "Aborting commit."
+            exit 1
+        fi
+    fi
+fi
