@@ -1,21 +1,18 @@
 <html>
     <head>
-        <script src='assets/lib/phaser/build/phaser.js'></script> 
-        <script src='game.js'></script>
+        <script src='assets/lib/phaser/build/phaser.js'></script>
     </head>
 
     <body>
-        <div id='error'></div>
+        <div style="white-space:pre;" id='error'></div>
         <script type='text/javascript'>
 
             window.onerror = function(msg, url, linenumber, column, errorobject) {
                 document.getElementById('error').innerHTML = 'Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber+'\nColumn: '+column+'\n StackTrace: '+errorobject;
-                return true;
+                return false;
             };
 
-
-            var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {preload: preload, create: create, update: update});
-
         </script>
+        <script type='text/javascript' src="game.js"></script>
     </body>
 </html>
