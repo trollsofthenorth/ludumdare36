@@ -9,6 +9,7 @@ import urllib.request
 from selenium import webdriver
 from xvfbwrapper import Xvfb
 
+
 class TestJavascript(unittest.TestCase):
 
     def setUp(self):

@@ -8,15 +8,14 @@
         <div id='error'></div>
         <script type='text/javascript'>
 
-            var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {preload: preload, create: create, update: update});
-            console.log('this is a test.');
-            console.log(e);
-
             window.onerror = function(msg, url, linenumber, column, errorobject) {
                 document.getElementById('error').innerHTML = 'Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber+'\nColumn: '+column+'\n StackTrace: '+errorobject;
                 return true;
-            }
- 
+            };
+
+
+            var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {preload: preload, create: create, update: update});
+
         </script>
     </body>
 </html>
