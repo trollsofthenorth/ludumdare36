@@ -1,12 +1,13 @@
 
 function range(start, end) {
+  var i;
   var myArray = [];
   if (start < end) {
-    for (var i = start; i <= end; i += 1) {
+    for (i = start; i <= end; i += 1) {
       myArray.push(i);
     }
   } else if (start > end){
-    for (var i = start; i >= end; i -= 1) {
+    for (i = start; i >= end; i -= 1) {
       myArray.push(i);
     }
   }
@@ -36,7 +37,7 @@ Lemmings.prototype = {
 
         this.game.world.setBounds(0, 0, 992, 480);
 
-        this.physics.startSystem(Phaser.Physics.ARCADE);
+        //this.physics.startSystem(Phaser.Physics.ARCADE);
         //this.physics.arcade.gravity.y = 200;
 
     },
@@ -49,7 +50,7 @@ Lemmings.prototype = {
         this.load.crossOrigin = 'anonymous';
 
         //this.load.image('background', 'assets/background.png');
-        this.load.image('wall-test', 'assets/level-wall-test-bitmap.png');
+        this.load.image('wall-test', 'assets/level-concave-test-bitmap.png');
         this.load.image('player', 'assets/phaser-dude.png');
 
         // Adding the spritesheet for a lemming.
@@ -58,16 +59,9 @@ Lemmings.prototype = {
     },
 
     create: function () {
-        /*
-        player = game.add.sprite(100, 200, 'player');
 
-        this.physics.arcade.enable(player);
-        player.body.collideWorldBounds = true;
-
-        cursors = game.input.keyboard.createCursorKeys();
-
-        jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        */
+        this.cursors = game.input.keyboard.createCursorKeys();
+        this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         //  Simple but pretty background
         this.background = this.add.sprite(0, 0, 'background');
@@ -76,7 +70,8 @@ Lemmings.prototype = {
         this.collision.update();
         this.collision.addToWorld();
 
-        this.lemming = this.add.sprite(50,50,'lemming');
+        this.lemming = this.add.sprite(250,250,'lemming');
+
         this.lemming.alpha=1; // This makes the background transparent for the sprite.
         this.lemming.animations.add('walker',range(0,7), 10, true);
         this.lemming.animations.add('shrugger',range(8,15), 10, true);
@@ -97,14 +92,16 @@ Lemmings.prototype = {
         this.lemming.animations.add('exploder',range(208,223), 10, true);
         this.lemming.play('walker');
         this.lemming.smoothed=false; // Ensures that we don't blur when scaling.
-        this.lemming.scale.setTo(10,10); // Scale up the image.
 
-        this.player = this.add.sprite(160,330,'player');
-        this.physics.arcade.enable(this.player);
+        console.log(this.lemming.height);
 
-        this.player.body.collideWorldBounds = true;
-        this.player.body.gravity.y = 0;
-        this.player.body.facing = 1;
+        this.player = this.add.sprite(160,300,'player');
+        //this.physics.arcade.enable(this.player);
+        //this.player.body.velocity.x=-30;
+
+        this.player.overlap = function(lemmingobject) {
+          console.log("ImpactP");
+        };
 
         this.cursors = game.input.keyboard.createCursorKeys();
 
@@ -145,39 +142,77 @@ Lemmings.prototype = {
 
     },
 
-    lemmingCollideWithBitmap: function() {
+    lemmingCollideWithFloor: function(b) {
+      var w = b.width/2;
+
+      bottom_fall_pixel = this.collision.getPixel(b.left+w, b.top+b.height);
+
+      return(bottom_fall_pixel.r>0);
+    },
+    lemmingCollideWithBitmap: function(b) {
+      // consider implementing this as a subclass
+      // with Phaser.TILEMAPLAYER and collideSpriteVsTilemapLayer
+      var w = b.width/2;
+      for(var check_y=b.top; check_y<b.top+b.height; check_y++) {
+        var v = this.collision.getPixel(b.left+w, check_y);
+        if(v.r===0) {
+          return b.height-(check_y-b.top);
+        }
+      }
+
       return false;
     },
 
+    actor_position_update: function(actor) {
+      var old_x = actor.x;
+
+      if (this.cursors.left.isDown)
+      {
+          actor.x-=1;
+      }
+      else if (this.cursors.right.isDown)
+      {
+          actor.x+=1;
+      }
+
+      if(this.lemmingCollideWithFloor(actor)) {
+        console.log("Falling");
+        actor.y+=1;
+      }
+      var step_height = this.lemmingCollideWithBitmap(actor);
+      console.log(step_height);
+      if( step_height > 2 ) {
+        console.log("Reverse");
+        actor.x = old_x;
+      } else {
+        actor.y -= step_height;
+        console.log("Climbing");
+      }
+    },
     /**
      * Core update loop. Handles collision checks and player input.
      *
      * @method update
      */
     update: function () {
-      this.player.body.velocity.x=-30;
+
       //this.player.body.velocity.x = 0;
 
-      if (this.cursors.left.isDown)
-      {
-          this.player.body.velocity.x = -250;
-      }
-      else if (this.cursors.right.isDown)
-      {
-          this.player.body.velocity.x = 250;
-      }
+      this.actor_position_update(this.lemming);
+      this.actor_position_update(this.player);
 
-      if( this.lemmingCollideWithBitmap(this.player) ) {
-        this.player.body.facing = 2;
-      }
+    },
+    collisionHandler: function(obj1, obj2) {
 
-
+    //  The two sprites are colliding
+      game.stage.backgroundColor = '#992d2d';
     },
 
 
     render: function() {
         if(showDebug) {
           this.game.debug.spriteInfo(this.player, 32, 520);
+          this.game.debug.bodyInfo(this.player, 32, 32);
           this.game.debug.body(this.player);
         }
     }
