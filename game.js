@@ -23,19 +23,19 @@ var bad;
 // Code that is common between all stages to ensure the canvas window behaves as expected.
 function commonInit() {
   this.game.renderer.renderSession.roundPixels = true;
-  this.game.world.setBounds(0, 0, 992, 480);
+  //this.game.world.setBounds(0, 0, 992, 480);
 
   //this.physics.startSystem(Phaser.Physics.ARCADE);
   //this.physics.arcade.gravity.y = 200;
 
   this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   this.game.scale.setMinMax(
-    window.innerWidth/2,
-    window.innerHeight/2,
-    window.innerWidth,
-    window.innerHeight);
+    320,
+    320,
+    640,
+    640);
   this.game.pageAlignHorizontally = true;
-  this.game.pageAlignVertically = false;
+  this.game.pageAlignVertically = true;
 }
 
 // The main game object.
@@ -135,7 +135,9 @@ Lemmings.prototype = {
         //this.load.baseURL = 'http://files.phaser.io.s3.amazonaws.com/codingtips/issue002/';
         this.load.crossOrigin = 'anonymous';
 
-        //this.load.image('background', 'assets/background.png');
+        this.load.image('background', 'assets/level-background.png');
+        this.load.image('concaveImage', 'assets/level-concave-test.png');
+
         this.load.image('wall-test', 'assets/level-concave-test-bitmap.png');
         this.load.image('player', 'assets/phaser-dude.png');
 
@@ -148,17 +150,17 @@ Lemmings.prototype = {
         this.cursors = game.input.keyboard.createCursorKeys();
         this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-        //  Simple but pretty background
+        // Simple but pretty background
         this.background = this.add.sprite(0, 0, 'background');
-        this.collision = this.add.bitmapData( this.game.world.width, this.game.world.height );
 
-        this.collision.draw("wall-test");
+        // Load the image of the ground (with transparent backgroud) and use it as a bitmap.
+        this.collision = this.add.bitmapData( this.game.world.width, this.game.world.height );
+        this.collision.draw("concaveImage");
         this.collision.update();
         this.collision.addToWorld();
 
-
+        // Add the lemming sprite and add all animations.
         this.lemming = this.add.sprite(130,90,'lemming');
-
         this.lemming.alpha=1; // This makes the background transparent for the sprite.
         this.lemming.animations.add('walker',range(0,7), 10, true);
         this.lemming.animations.add('shrugger',range(8,15), 10, true);
@@ -177,9 +179,6 @@ Lemmings.prototype = {
         this.lemming.animations.add('dyer',range(160,191), 10, true);
         this.lemming.animations.add('drowner',range(192,207), 10, true);
         this.lemming.animations.add('exploder',range(208,223), 10, true);
-
-        this.lemming.data.moving_left = true;
-
         this.lemming.play('walker');
         this.lemming.smoothed=false; // Ensures that we don't blur when scaling.
 
@@ -187,6 +186,9 @@ Lemmings.prototype = {
         this.lemming.events.onInputDown.add(lemming_click_handler, this)
 
         console.log(this.lemming.height);
+        this.lemming.data.moving_left = true;
+
+        //console.log(this.lemming.height);
 
         this.player = this.add.sprite(160,300,'player');
         this.player.data.moving_left = true;
