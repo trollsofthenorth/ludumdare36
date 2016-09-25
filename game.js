@@ -26,10 +26,10 @@ var Lemmings = function (game) {
     this.emitter = null;
     this.player = null;
 
-    this.clouds = null;
+    this.actors = null;
 };
 
-var showDebug = true;
+var showDebug = false;
 
 Lemmings.prototype = {
 
@@ -84,42 +84,13 @@ Lemmings.prototype = {
         this.collision.addToWorld();
 
 
-        this.lemmings = this.game.add.group();
 
 
-        this.clouds = this.game.add.physicsGroup();
-        this.cloud2 = new CloudPlatform(this.game, 10, 10, 'player', this.clouds);
-        //this.clouds.callAll('start');
-        this.lemming = new Lemming(this.game, 130, 90, 'lemming', this.clouds);
+        this.actors = this.game.add.physicsGroup();
+        this.lemming = new Lemming(this.game, 130, 90, 'lemming', this.actors);
 
 
-        this.lemming.alpha=1; // This makes the background transparent for the sprite.
-        this.lemming.animations.add('walker',range(0,7), 10, true);
-        this.lemming.animations.add('shrugger',range(8,15), 10, true);
-        this.lemming.animations.add('exiter',range(16,24), 10, true);
-        //this.lemming.animations.add('black1',range(25,31), 10, true);
-        this.lemming.animations.add('faller',range(32,35), 10, true);
-        this.lemming.animations.add('parachuter',range(36,43), 10, true);
-        //this.lemming.animations.add('black2',range(44,47), 10, true);
-        this.lemming.animations.add('blocker',range(48,63), 10, true);
-        this.lemming.animations.add('climber',range(64,71), 10, true);
-        this.lemming.animations.add('climberover',range(72,79), 10, true);
-        this.lemming.animations.add('builder',range(80,95), 10, true);
-        this.lemming.animations.add('basher',range(96,127), 10, true);
-        this.lemming.animations.add('digger',range(128,135), 10, true);
-        this.lemming.animations.add('miner',range(136,159), 10, true);
-        this.lemming.animations.add('dyer',range(160,191), 10, true);
-        this.lemming.animations.add('drowner',range(192,207), 10, true);
-        this.lemming.animations.add('exploder',range(208,223), 10, true);
-
-        this.lemming.data.moving_left = true;
-
-        this.lemming.play('walker');
-        this.lemming.smoothed=false; // Ensures that we don't blur when scaling.
-
-        console.log(this.lemming.height);
-
-        this.player = this.add.sprite(160,300,'player');
+        this.player = this.add.sprite(160,30,'player');
         this.player.data.moving_left = true;
         //this.physics.arcade.enable(this.player);
         //this.player.body.velocity.x=-30;
@@ -240,8 +211,6 @@ Lemmings.prototype = {
 
     render: function() {
         if(showDebug) {
-          this.game.debug.spriteInfo(this.cloud2, 0,10);
-          this.game.debug.spriteInfo(this.player, 32, 520);
           this.game.debug.bodyInfo(this.player, 32, 32);
           this.game.debug.body(this.player);
         }
