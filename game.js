@@ -25,8 +25,8 @@ function commonInit() {
   this.game.renderer.renderSession.roundPixels = true;
   this.game.world.setBounds(0, 0, 992, 480);
 
-  this.physics.startSystem(Phaser.Physics.ARCADE);
-  this.physics.arcade.gravity.y = 200;
+  this.game.physics.startSystem(Phaser.Physics.ARCADE);
+  //this.game.physics.arcade.gravity.y = 200;
 
   this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   this.game.scale.setMinMax(
@@ -133,7 +133,7 @@ Lemmings.prototype = {
 
 
         this.actors = this.game.add.physicsGroup();
-        this.lemming = new Lemming(this.game, 130, 90, 'lemming', this.actors);
+        this.lemming = new Lemming(this.game, 130, 190, 'lemming', this.actors);
 
 
         this.player = this.add.sprite(160,30,'player');
