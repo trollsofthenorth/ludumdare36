@@ -50,6 +50,7 @@ introScreen.prototype = {
   preload: function() {
     this.load.image('menuIcon', 'assets/menu-icon.png');
     this.load.image('menuTitle', 'assets/menu-title.png');
+    this.load.audio('musicBackground', 'assets/music-background.mp3');
   },
   create: function() {
     // Adding title image.
@@ -58,24 +59,47 @@ introScreen.prototype = {
     title.x = game.width/2;
     title.y = game.height/2;
 
-    // Adding only button.
-    var button = this.game.add.button(100,100, 'menuIcon', this.toStage1, this);
-    button.anchor.setTo(0.5);
-    button.x = game.width/2;
-    button.y = game.height/2 + 50;
+    // Adding music to title.
+    var music = this.game.add.audio('musicBackground');
+    music.play('', 0, 1, true);
+    this.game.sound.volume = 0; // Setting the default volume for the game 0 during testing.
 
-    // Adding text to button.
-    var style = { font: "bold 15px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" }
-    var text = this.game.add.text(10,10, "Start", style);
-    text.anchor.setTo(0.5);
-    text.x = button.x;
-    text.y = button.y + 10;
+    // Adding start button.
+    var startButton = this.game.add.button(100,100, 'menuIcon', this.toStage1, this);
+    startButton.anchor.setTo(0.5);
+    startButton.x = game.width/2 - 50;
+    startButton.y = game.height/2 + 50;
+    startButton['data']['style'] = { font: "bold 12px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" }
+    startButton['data']['value'] = this.game.add.text(10,10, "Start", startButton['data']['style']);
+    startButton['data']['value'].anchor.setTo(0.5);
+    startButton['data']['value'].x = startButton.x;
+    startButton['data']['value'].y = startButton.y + 10;
+
+    // Adding music button.
+    var musicButton = this.game.add.button(100,100, 'menuIcon', this.toggleMusic, this);
+    musicButton.anchor.setTo(0.5);
+    musicButton.x = game.width/2 + 50;
+    musicButton.y = game.height/2 + 50;
+    musicButton['data']['style'] = { font: "bold 12px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+    musicButton['data']['value'] = this.game.add.text(10,10, "Music", musicButton['data']['style']);
+    musicButton['data']['value'].anchor.setTo(0.5);
+    musicButton['data']['value'].x = musicButton.x;
+    musicButton['data']['value'].y = musicButton.y + 10;
 
   },
   update: function() {},
   render: function() {},
   toStage1: function () {
     game.state.start('Game');
+  },
+  toggleMusic: function(button) {
+    if (this.game.sound.volume == 0) {
+      this.game.sound.volume = 1;
+      button['data']['style'].fill = "#fff";
+    } else {
+      this.game.sound.volume = 0;
+      button['data']['style'].fill = "#999";
+    }
   }
 }
 game.state.add('introScreen', introScreen);
