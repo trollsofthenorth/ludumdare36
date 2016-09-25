@@ -1,12 +1,13 @@
 
 function range(start, end) {
+  var i;
   var myArray = [];
   if (start < end) {
-    for (var i = start; i <= end; i += 1) {
+    for (i = start; i <= end; i += 1) {
       myArray.push(i);
     }
   } else if (start > end){
-    for (var i = start; i >= end; i -= 1) {
+    for (i = start; i >= end; i -= 1) {
       myArray.push(i);
     }
   }
@@ -69,7 +70,8 @@ Lemmings.prototype = {
         this.collision.update();
         this.collision.addToWorld();
 
-        this.lemming = this.add.sprite(50,50,'lemming');
+        this.lemming = this.add.sprite(250,250,'lemming');
+
         this.lemming.alpha=1; // This makes the background transparent for the sprite.
         this.lemming.animations.add('walker',range(0,7), 10, true);
         this.lemming.animations.add('shrugger',range(8,15), 10, true);
@@ -90,8 +92,8 @@ Lemmings.prototype = {
         this.lemming.animations.add('exploder',range(208,223), 10, true);
         this.lemming.play('walker');
         this.lemming.smoothed=false; // Ensures that we don't blur when scaling.
-        this.lemming.scale.setTo(10,10); // Scale up the image.
 
+        console.log(this.lemming.height);
 
         this.player = this.add.sprite(160,300,'player');
         //this.physics.arcade.enable(this.player);
@@ -153,7 +155,7 @@ Lemmings.prototype = {
       var w = b.width/2;
       for(var check_y=b.top; check_y<b.top+b.height; check_y++) {
         var v = this.collision.getPixel(b.left+w, check_y);
-        if(v.r==0) {
+        if(v.r===0) {
           return b.height-(check_y-b.top);
         }
       }
@@ -161,6 +163,32 @@ Lemmings.prototype = {
       return false;
     },
 
+    actor_position_update: function(actor) {
+      var old_x = actor.x;
+
+      if (this.cursors.left.isDown)
+      {
+          actor.x-=1;
+      }
+      else if (this.cursors.right.isDown)
+      {
+          actor.x+=1;
+      }
+
+      if(this.lemmingCollideWithFloor(actor)) {
+        console.log("Falling");
+        actor.y+=1;
+      }
+      var step_height = this.lemmingCollideWithBitmap(actor);
+      console.log(step_height);
+      if( step_height > 2 ) {
+        console.log("Reverse");
+        actor.x = old_x;
+      } else {
+        actor.y -= step_height;
+        console.log("Climbing");
+      }
+    },
     /**
      * Core update loop. Handles collision checks and player input.
      *
@@ -169,31 +197,9 @@ Lemmings.prototype = {
     update: function () {
 
       //this.player.body.velocity.x = 0;
-      var old_x = this.player.x;
 
-      if (this.cursors.left.isDown)
-      {
-          this.player.x-=1;
-      }
-      else if (this.cursors.right.isDown)
-      {
-          this.player.x+=1;
-      }
-
-      if( this.lemmingCollideWithFloor(this.player)) {
-        console.log("Falling");
-        this.player.y+=1;
-      }
-      var step_height = this.lemmingCollideWithBitmap(this.player);
-      console.log(step_height);
-      if( step_height > 2 ) {
-        console.log("Reverse");
-        this.player.x = old_x;
-      } else {
-        this.player.y -= step_height;
-        console.log("Climbing");
-      }
-
+      this.actor_position_update(this.lemming);
+      this.actor_position_update(this.player);
 
     },
     collisionHandler: function(obj1, obj2) {
