@@ -265,7 +265,7 @@ Lemmings.prototype = {
 
       //this.player.body.velocity.x = 0;
       hud_update()
-      //this.actor_position_update(this.lemming);
+      this.actor_position_update(this.lemming);
       this.actor_position_update(this.player);
 
     },
@@ -353,7 +353,7 @@ var get_selected_button = function() {
   if (button.data.selected) {
       output = button;
 
-    }  
+    }
   })
   return output;
 }
