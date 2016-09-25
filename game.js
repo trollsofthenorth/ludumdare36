@@ -22,7 +22,7 @@ Lemmings.prototype = {
 
         this.game.world.setBounds(0, 0, 992, 480);
 
-        this.physics.startSystem(Phaser.Physics.ARCADE);
+        //this.physics.startSystem(Phaser.Physics.ARCADE);
         //this.physics.arcade.gravity.y = 200;
 
     },
@@ -35,21 +35,14 @@ Lemmings.prototype = {
         this.load.crossOrigin = 'anonymous';
 
         //this.load.image('background', 'assets/background.png');
-        this.load.image('wall-test', 'assets/level-wall-test-bitmap.png');
+        this.load.image('wall-test', 'assets/level-concave-test-bitmap.png');
         this.load.image('player', 'assets/phaser-dude.png');
     },
 
     create: function () {
-        /*
-        player = game.add.sprite(100, 200, 'player');
 
-        this.physics.arcade.enable(player);
-        player.body.collideWorldBounds = true;
-
-        cursors = game.input.keyboard.createCursorKeys();
-
-        jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        */
+        this.cursors = game.input.keyboard.createCursorKeys();
+        this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         //  Simple but pretty background
         this.background = this.add.sprite(0, 0, 'background');
@@ -58,12 +51,26 @@ Lemmings.prototype = {
         this.collision.update();
         this.collision.addToWorld();
 
-        this.player = this.add.sprite(160,330,'player');
-        this.physics.arcade.enable(this.player);
+        this.player = this.add.sprite(160,300,'player');
+        //this.physics.arcade.enable(this.player);
+        //this.player.body.velocity.x=-30;
 
-        this.player.body.collideWorldBounds = true;
-        this.player.body.gravity.y = 0;
-        this.player.body.facing = 1;
+        this.player.overlap = function(lemmingobject) {
+          console.log("ImpactP");
+        };
+
+
+        this.frank = this.add.sprite(50,330,"frank");
+        //this.physics.arcade.enable(this.frank);
+
+        this.frank.overlap = function(lemmingobject) {
+          console.log("Impact");
+        };
+
+
+
+
+
 
         this.cursors = game.input.keyboard.createCursorKeys();
 
@@ -104,7 +111,24 @@ Lemmings.prototype = {
 
     },
 
-    lemmingCollideWithBitmap: function() {
+    lemmingCollideWithFloor: function(b) {
+      var w = b.width/2;
+
+      bottom_fall_pixel = this.collision.getPixel(b.left+w, b.top+b.height);
+
+      return(bottom_fall_pixel.r>0);
+    },
+    lemmingCollideWithBitmap: function(b) {
+      // consider implementing this as a subclass
+      // with Phaser.TILEMAPLAYER and collideSpriteVsTilemapLayer
+      var w = b.width/2;
+      for(var check_y=b.top; check_y<b.top+b.height; check_y++) {
+        var v = this.collision.getPixel(b.left+w, check_y);
+        if(v.r==0) {
+          return b.height-(check_y-b.top);
+        }
+      }
+
       return false;
     },
 
@@ -114,29 +138,46 @@ Lemmings.prototype = {
      * @method update
      */
     update: function () {
-      this.player.body.velocity.x=-30;
+
       //this.player.body.velocity.x = 0;
+      var old_x = this.player.x;
 
       if (this.cursors.left.isDown)
       {
-          this.player.body.velocity.x = -250;
+          this.player.x-=1;
       }
       else if (this.cursors.right.isDown)
       {
-          this.player.body.velocity.x = 250;
+          this.player.x+=1;
       }
 
-      if( this.lemmingCollideWithBitmap(this.player) ) {
-        this.player.body.facing = 2;
+      if( this.lemmingCollideWithFloor(this.player)) {
+        console.log("Falling");
+        this.player.y+=1;
+      }
+      var step_height = this.lemmingCollideWithBitmap(this.player);
+      console.log(step_height);
+      if( step_height > 2 ) {
+        console.log("Reverse");
+        this.player.x = old_x;
+      } else {
+        this.player.y -= step_height;
+        console.log("Climbing");
       }
 
 
+    },
+    collisionHandler: function(obj1, obj2) {
+
+    //  The two sprites are colliding
+      game.stage.backgroundColor = '#992d2d';
     },
 
 
     render: function() {
         if(showDebug) {
           this.game.debug.spriteInfo(this.player, 32, 520);
+          this.game.debug.bodyInfo(this.player, 32, 32);
           this.game.debug.body(this.player);
         }
     }
