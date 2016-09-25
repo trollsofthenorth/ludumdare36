@@ -256,6 +256,10 @@ var hud_init = function() {
 
   //setup buttons
   buttons.push(game.add.button(10, 280, 'button1', function() {console.log('pressed')}, this));
+  buttons.push(game.add.button(40, 280, 'button2', function() {console.log('pressed')}, this));
+  buttons.push(game.add.button(70, 280, 'button3', function() {console.log('pressed')}, this));
+  buttons.push(game.add.button(100, 280, 'button4', function() {console.log('pressed')}, this));
+
 }
 
 game.state.add('Game', Lemmings, true);
