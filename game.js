@@ -75,11 +75,13 @@ Lemmings.prototype = {
         //  Simple but pretty background
         this.background = this.add.sprite(0, 0, 'background');
         this.collision = this.add.bitmapData( this.game.world.width, this.game.world.height );
+
         this.collision.draw("wall-test");
         this.collision.update();
         this.collision.addToWorld();
 
-        this.lemming = this.add.sprite(250,250,'lemming');
+
+        this.lemming = this.add.sprite(130,90,'lemming');
 
         this.lemming.alpha=1; // This makes the background transparent for the sprite.
         this.lemming.animations.add('walker',range(0,7), 10, true);
@@ -99,12 +101,16 @@ Lemmings.prototype = {
         this.lemming.animations.add('dyer',range(160,191), 10, true);
         this.lemming.animations.add('drowner',range(192,207), 10, true);
         this.lemming.animations.add('exploder',range(208,223), 10, true);
+
+        this.lemming.data.moving_left = true;
+
         this.lemming.play('walker');
         this.lemming.smoothed=false; // Ensures that we don't blur when scaling.
 
         console.log(this.lemming.height);
 
         this.player = this.add.sprite(160,300,'player');
+        this.player.data.moving_left = true;
         //this.physics.arcade.enable(this.player);
         //this.player.body.velocity.x=-30;
 
@@ -193,6 +199,7 @@ Lemmings.prototype = {
       if( step_height > 2 ) {
         console.log("Reverse");
         actor.x = old_x;
+        actor.data.moving_left = ! actor.data.moving_left;
       } else {
         actor.y -= step_height;
         console.log("Climbing");
