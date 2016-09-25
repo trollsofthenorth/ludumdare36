@@ -34,7 +34,7 @@ var showDebug = false;
 Lemmings.prototype = {
 
     init: function () {
-
+        
         this.game.renderer.renderSession.roundPixels = true;
 
         this.game.world.setBounds(0, 0, 992, 480);

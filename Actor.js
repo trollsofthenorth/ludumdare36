@@ -1,25 +1,4 @@
-
 /* State machine for a walking/falling/digging actor. */
-
-
-/* OMG WAT ALAN */
-
-CloudPlatform = function (game, x, y, key, group) {
-    if (typeof group === 'undefined') { group = game.world; }
-    Phaser.Sprite.call(this, game, x, y, key);
-    game.physics.arcade.enable(this);
-    this.anchor.x = 0.5;
-    this.body.customSeparateX = true;
-    this.body.customSeparateY = true;
-    this.body.allowGravity = false;
-    this.body.immovable = true;
-    this.playerLocked = false;
-    group.add(this);
-};
-CloudPlatform.prototype = Object.create(Phaser.Sprite.prototype);
-CloudPlatform.prototype.constructor = CloudPlatform;
-
-
 var ActorState = {
   walker : "walker",
   shrugger : "shrugger",
@@ -38,6 +17,8 @@ var ActorState = {
   exploder : "exploder"
 }
 
+var debugvar;
+
 
 Lemming = function (game, x, y, key, group) {
     x = x || 0;
@@ -46,15 +27,17 @@ Lemming = function (game, x, y, key, group) {
     frame = null;
     if (typeof group === 'undefined') { group = game.world; }
 
+		this.game = game;
+
     Phaser.Sprite.call(this, game, x, y, key, frame);
-    this.state = ActorState.faller;
     game.physics.arcade.enable(this);
+
     this.anchor.x = 0.5;
     this.body.customSeparateX = true;
     this.body.customSeparateY = true;
     this.body.allowGravity = true;
 
-
+		this.state = null;
 
 		this.alpha=1; // This makes the background transparent for the sprite.
 		this.animations.add('walker',range(0,7), 10, true);
@@ -77,16 +60,47 @@ Lemming = function (game, x, y, key, group) {
 
 		this.data.moving_left = true;
 
-		this.play('faller');
+		this.play("faller");
+		this.state = "faller";
+
 		this.smoothed=false; // Ensures that we don't blur when scaling.
 
-		console.log(this.height);
-
-
     group.add(this);
+		console.log(this);
+		debugvar=this;
 };
 Lemming.prototype = Object.create(Phaser.Sprite.prototype);
 Lemming.prototype.constructor = Lemming;
 
+Lemming.prototype.tostate = function(newstatename) {
 
-/* END OMG WAT ALAN */
+	console.log(this + " changing from state " + this.state + " to " + newstatename );
+	if(this.states.hasOwnProperty(this.state)) {
+		if(this.states[this.state].hasOwnProperty(newstatename)) {
+			if( this.states[this.state][newstatename]() ) {
+				console.log(this + " changed from state " + this.state + " to " + newstatename + " successfully!");
+				this.state = newstatename;
+				return true;
+			};
+		}
+	}
+	console.log("refuse changing from state " + this.state + " to " + newstatename );
+	return false;
+}
+
+Lemming.prototype.states = {}
+Lemming.prototype.states.walker = function(that) {}
+Lemming.prototype.states.faller = function(that) {
+	//that.body.velocity.y=10;
+	//console.log(that);
+}
+Lemming.prototype.states.faller.walker = function() { console.log("faller -> walker"); }
+
+Lemming.prototype.update = function() {
+	// this gets called on every world tick?
+	console.log(this);
+	this.game.physics.arcade.collide(this, this.game.state.callbackContext.collision, this.customSep, null, this);
+	if(this.states.hasOwnProperty(this.state)) {
+		this.states[this.state](this);
+	}
+}
