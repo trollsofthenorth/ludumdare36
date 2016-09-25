@@ -15,8 +15,11 @@ function range(start, end) {
 
 }
 
+var fps; //fps counter
+var infoText; //Text above buttans
+var buttons = [];
 
-var game = new Phaser.Game(320, 240, Phaser.CANVAS, 'startingstate');
+var game = new Phaser.Game(320, 320, Phaser.CANVAS, 'startingstate');
 
 var Lemmings = function (game) {
     this.background = null;
@@ -68,7 +71,6 @@ Lemmings.prototype = {
     },
 
     create: function () {
-
         this.cursors = game.input.keyboard.createCursorKeys();
         this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
@@ -119,7 +121,7 @@ Lemmings.prototype = {
         };
 
         this.cursors = game.input.keyboard.createCursorKeys();
-
+        hud_init()
 
     },
 
@@ -191,18 +193,18 @@ Lemmings.prototype = {
       }
 
       if(this.lemmingCollideWithFloor(actor)) {
-        console.log("Falling");
+        //console.log("Falling");
         actor.y+=1;
       }
       var step_height = this.lemmingCollideWithBitmap(actor);
-      console.log(step_height);
+      //console.log(step_height);
       if( step_height > 2 ) {
-        console.log("Reverse");
+        //console.log("Reverse");
         actor.x = old_x;
         actor.data.moving_left = ! actor.data.moving_left;
       } else {
         actor.y -= step_height;
-        console.log("Climbing");
+        //console.log("Climbing");
       }
     },
     /**
@@ -213,7 +215,7 @@ Lemmings.prototype = {
     update: function () {
 
       //this.player.body.velocity.x = 0;
-
+      hud_update()
       this.actor_position_update(this.lemming);
       this.actor_position_update(this.player);
 
@@ -234,5 +236,26 @@ Lemmings.prototype = {
     }
 
 };
+
+var hud_update = function () {
+  // Function to update hud on screen.
+  infoText.text = (game.time.elapsed || '--');
+}
+
+var hud_init = function() {
+  var graphics = game.add.graphics(0, 0);
+  graphics.lineStyle(0);
+  graphics.beginFill(0x000000, 1);
+  graphics.drawRect(0, 240, 320, 80);
+  graphics.endFill();
+  hud_bg = new Phaser.Rectangle(0,240, 320, 80);
+  //fps = game.add.text(10, 250, 'fps', {font: '8px Arial', fill: '#FFFFFF' });
+  infoText = game.add.text(10, 240, 'infoText', {font: '8px Arial', fill: '#FFFFFF'});
+  infoText.fixedToCamera=true;
+  //fps.fixedToCamera=true;
+
+  //setup buttons
+  buttons.push(game.add.button(10, 280, 'button1', function() {console.log('pressed')}, this));
+}
 
 game.state.add('Game', Lemmings, true);
