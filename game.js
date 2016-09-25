@@ -314,6 +314,9 @@ Lemmings.prototype = {
 var hud_update = function () {
   // Function to update hud on screen.
   infoText.text = (game.time.elapsed || '--');
+  buttons.forEach(function(button) {
+    button.data.text.text = button.data.value;
+  });
 }
 
 var hud_init = function() {
@@ -324,16 +327,27 @@ var hud_init = function() {
   graphics.endFill();
   hud_bg = new Phaser.Rectangle(0,240, 320, 80);
   //fps = game.add.text(10, 250, 'fps', {font: '8px Arial', fill: '#FFFFFF' });
-  infoText = game.add.text(10, 240, 'infoText', {font: '8px Arial', fill: '#FFFFFF'});
+  var txt_Style = {font: '8px Arial', fill: '#FFFFFF'};
+  infoText = game.add.text(10, 240, 'infoText', txt_Style);
   infoText.fixedToCamera=true;
   //fps.fixedToCamera=true;
 
   //setup buttons
-  buttons.push(game.add.button(10, 280, 'button1', function() {console.log('pressed')}, this));
-  buttons.push(game.add.button(40, 280, 'button2', function() {console.log('pressed')}, this));
-  buttons.push(game.add.button(70, 280, 'button3', function() {console.log('pressed')}, this));
-  buttons.push(game.add.button(100, 280, 'button4', function() {console.log('pressed')}, this));
+  buttons.push(game.add.button(10, 280, 'button1', hud_button_press, this));
+  buttons.push(game.add.button(40, 280, 'button2', hud_button_press, this));
+  buttons.push(game.add.button(70, 280, 'button3', hud_button_press, this));
+  buttons.push(game.add.button(100, 280, 'button4', hud_button_press, this));
 
+  buttons.forEach(function(button) { // setup place to store values and anchor text
+    button['data']['value'] = 100;
+    button['data']['text'] = game.add.text(button.position.x + 15, button.position.y + 30, '00', txt_Style);
+    button['data']['text'].anchor.set(0.5);
+  });
+}
+
+var hud_button_press = function(button) {
+  button.data.value = button.data.value - 1;
+  console.log(button.data.value);
 }
 
 game.state.add('Game', Lemmings, true);
