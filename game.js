@@ -51,7 +51,7 @@ var ActorState = {
   exploder : "exploder"
 }
 
-/*
+
 Lemming = function (game, x, y, key, group) {
     x = x || 0;
     y = y || 0;
@@ -60,21 +60,18 @@ Lemming = function (game, x, y, key, group) {
     if (typeof group === 'undefined') { group = game.world; }
 
     Phaser.Sprite.call(this, game, x, y, key, frame);
-
-    state = ActorState.faller;
-
-    PIXI.Sprite.call(this, Phaser.Cache.DEFAULT);
-
-    Phaser.Component.Core.init.call(this, game, x, y, key, frame);
-
+    this.state = ActorState.faller;
+    game.physics.arcade.enable(this);
+    this.anchor.x = 0.5;
+    this.body.customSeparateX = true;
+    this.body.customSeparateY = true;
+    this.body.allowGravity = true;
+    group.add(this);
 };
 Lemming.prototype = Object.create(Phaser.Sprite.prototype);
 Lemming.prototype.constructor = Lemming;
-*/
+
 /* END OMG WAT ALAN */
-
-
-
 
 var game = new Phaser.Game(320, 240, Phaser.CANVAS, 'startingstate');
 
@@ -146,7 +143,11 @@ Lemmings.prototype = {
         this.lemmings = this.game.add.group();
 
 
-        this.lemming = this.add.sprite(130,90,'lemming');
+        this.clouds = this.game.add.physicsGroup();
+        this.cloud2 = new CloudPlatform(this.game, 10, 10, 'player', this.clouds);
+        //this.clouds.callAll('start');
+        this.lemming = new Lemming(this.game, 130, 90, 'lemming', this.clouds);
+
 
         this.lemming.alpha=1; // This makes the background transparent for the sprite.
         this.lemming.animations.add('walker',range(0,7), 10, true);
@@ -186,9 +187,9 @@ Lemmings.prototype = {
         this.cursors = game.input.keyboard.createCursorKeys();
 
 
-        this.clouds = this.game.add.physicsGroup();
-        this.cloud2 = new CloudPlatform(this.game, 10, 10, 'player', this.clouds);
-        this.clouds.callAll('start');
+
+
+
     },
 
     /**
