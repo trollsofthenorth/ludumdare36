@@ -18,7 +18,7 @@ function range(start, end) {
 var fps; //fps counter
 var infoText; //Text above buttans
 var buttons = [];
-
+var bad;
 
 // Code that is common between all stages to ensure the canvas window behaves as expected.
 function commonInit() {
@@ -155,6 +155,9 @@ Lemmings.prototype = {
         this.lemming.play('walker');
         this.lemming.smoothed=false; // Ensures that we don't blur when scaling.
 
+        this.lemming.inputEnabled = true;
+        this.lemming.events.onInputDown.add(lemming_click_handler, this)
+
         console.log(this.lemming.height);
 
         this.player = this.add.sprite(160,300,'player');
@@ -262,7 +265,7 @@ Lemmings.prototype = {
 
       //this.player.body.velocity.x = 0;
       hud_update()
-      this.actor_position_update(this.lemming);
+      //this.actor_position_update(this.lemming);
       this.actor_position_update(this.player);
 
     },
@@ -286,9 +289,20 @@ Lemmings.prototype = {
 var hud_update = function () {
   // Function to update hud on screen.
   infoText.text = (game.time.elapsed || '--');
+  bOneSelected = false;
   buttons.forEach(function(button) {
+    if (button.data.selected && ! bOneSelected) {
+      bOneSelected = true
+    } else if (button.data.selected) {
+      button.data.selected = false;
+      console.log('cleaning up - should not happen');
+    }
     button.data.text.text = button.data.value;
   });
+  if (! bOneSelected) {
+    buttons[0].data.selected = true;
+    console.log('nothing seleted - picking first');
+  }
 }
 
 var hud_init = function() {
@@ -312,14 +326,36 @@ var hud_init = function() {
 
   buttons.forEach(function(button) { // setup place to store values and anchor text
     button['data']['value'] = 100;
+    button['data']['selected'] = false;
     button['data']['text'] = game.add.text(button.position.x + 15, button.position.y + 30, '00', txt_Style);
     button['data']['text'].anchor.set(0.5);
   });
 }
 
+var lemming_click_handler = function(thing) {
+  console.log(thing);
+  console.log(get_selected_button())
+}
+
 var hud_button_press = function(button) {
+  buttons.forEach(function(button) {
+    button.data.selected = false;
+  });
+  button.data.selected = true;
+
   button.data.value = button.data.value - 1;
   console.log(button.data.value);
+}
+
+var get_selected_button = function() {
+  var output;
+  buttons.forEach(function(button) {
+  if (button.data.selected) {
+      output = button;
+
+    }  
+  })
+  return output;
 }
 
 game.state.add('Game', Lemmings, true);
