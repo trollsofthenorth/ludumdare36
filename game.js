@@ -83,8 +83,8 @@ introScreen.prototype = {
     musicButton.x = game.width/2 + 50;
     musicButton.y = game.height/2 + 50;
     musicButton['data']['color'] = '#fff';
-    musicButton['data']['label'] = 'Music';
-    musicButton['data']['style'] = { font: "bold 12px Arial", fill: musicButton['data']['color'], boundsAlignH: "center", boundsAlignV: "middle" };
+    musicButton['data']['label'] = 'Music On';
+    musicButton['data']['style'] = { font: "bold 8px Arial", fill: musicButton['data']['color'], boundsAlignH: "center", boundsAlignV: "middle" };
     musicButton['data']['value'] = this.game.add.text(10,10, musicButton['data']['label'], musicButton['data']['style']);
     musicButton['data']['value'].anchor.setTo(0.5);
     musicButton['data']['value'].x = musicButton.x;
@@ -99,10 +99,10 @@ introScreen.prototype = {
   toggleMusic: function(button) {
     if (this.game.sound.volume == 0) {
       this.game.sound.volume = 1;
-      button['data']['label'] = "Music On";
+      button['data']['value'].text = "Music\nOn";
     } else {
       this.game.sound.volume = 0;
-      button['data']['label'] = "Music Off";
+      button['data']['value'].text = "Music\nOff";
     }
   }
 }
