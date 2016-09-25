@@ -1,4 +1,5 @@
 
+// Convenience function for creatig ranges of numbers for providing list of frame.
 function range(start, end) {
   var i;
   var myArray = [];
@@ -12,11 +13,73 @@ function range(start, end) {
     }
   }
   return myArray;
-
 }
 
+var fps; //fps counter
+var infoText; //Text above buttans
+var buttons = [];
 
-var game = new Phaser.Game(320, 240, Phaser.CANVAS, 'startingstate');
+
+// Code that is common between all stages to ensure the canvas window behaves as expected.
+function commonInit() {
+  this.game.renderer.renderSession.roundPixels = true;
+  this.game.world.setBounds(0, 0, 992, 480);
+
+  this.physics.startSystem(Phaser.Physics.ARCADE);
+  this.physics.arcade.gravity.y = 200;
+
+  this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+  this.game.scale.setMinMax(
+    window.innerWidth/2,
+    window.innerHeight/2,
+    window.innerWidth,
+    window.innerHeight);
+  this.game.pageAlignHorizontally = true;
+  this.game.pageAlignVertically = false;
+}
+
+// The main game object.
+var game = new Phaser.Game(320, 320, Phaser.CANVAS, 'startingstate');
+
+// introScreen game state.
+var introScreen = function (game) {};
+introScreen.prototype = {
+  init: function() {
+    commonInit();
+  },
+  preload: function() {
+    this.load.image('menuIcon', 'assets/menu-icon.png');
+    this.load.image('menuTitle', 'assets/menu-title.png');
+  },
+  create: function() {
+    // Adding title image.
+    var title = this.game.add.sprite(0,0,'menuTitle');
+    title.anchor.setTo(0.5);
+    title.x = game.width/2;
+    title.y = game.height/2;
+
+    // Adding only button.
+    var button = this.game.add.button(100,100, 'menuIcon', this.toStage1, this);
+    button.anchor.setTo(0.5);
+    button.x = game.width/2;
+    button.y = game.height/2 + 50;
+
+    // Adding text to button.
+    var style = { font: "bold 15px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" }
+    var text = this.game.add.text(10,10, "Start", style);
+    text.anchor.setTo(0.5);
+    text.x = button.x;
+    text.y = button.y + 10;
+
+  },
+  update: function() {},
+  render: function() {},
+  toStage1: function () {
+    game.state.start('Game');
+  }
+}
+game.state.add('introScreen', introScreen);
+
 
 var Lemmings = function (game) {
     this.background = null;
@@ -34,22 +97,6 @@ var showDebug = false;
 Lemmings.prototype = {
 
     init: function () {
-        
-        this.game.renderer.renderSession.roundPixels = true;
-
-        this.game.world.setBounds(0, 0, 992, 480);
-
-        this.physics.startSystem(Phaser.Physics.ARCADE);
-        //this.physics.arcade.gravity.y = 200;
-
-        this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        this.game.scale.setMinMax(
-          window.innerWidth/2,
-          window.innerHeight/2,
-          window.innerWidth,
-          window.innerHeight);
-        this.game.pageAlignHorizontally = true;
-        this.game.pageAlignVertically = false;
 
     },
 
@@ -71,7 +118,6 @@ Lemmings.prototype = {
     },
 
     create: function () {
-
         this.cursors = game.input.keyboard.createCursorKeys();
         this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
@@ -100,7 +146,7 @@ Lemmings.prototype = {
         };
 
         this.cursors = game.input.keyboard.createCursorKeys();
-
+        hud_init()
 
 
 
@@ -175,18 +221,18 @@ Lemmings.prototype = {
       }
 
       if(this.lemmingCollideWithFloor(actor)) {
-        console.log("Falling");
+        //console.log("Falling");
         actor.y+=1;
       }
       var step_height = this.lemmingCollideWithBitmap(actor);
-      console.log(step_height);
+      //console.log(step_height);
       if( step_height > 2 ) {
-        console.log("Reverse");
+        //console.log("Reverse");
         actor.x = old_x;
         actor.data.moving_left = ! actor.data.moving_left;
       } else {
         actor.y -= step_height;
-        console.log("Climbing");
+        //console.log("Climbing");
       }
     },
     /**
@@ -197,7 +243,7 @@ Lemmings.prototype = {
     update: function () {
 
       //this.player.body.velocity.x = 0;
-
+      hud_update()
       //this.actor_position_update(this.lemming);
       //this.actor_position_update(this.player);
 
@@ -218,4 +264,30 @@ Lemmings.prototype = {
 
 };
 
+var hud_update = function () {
+  // Function to update hud on screen.
+  infoText.text = (game.time.elapsed || '--');
+}
+
+var hud_init = function() {
+  var graphics = game.add.graphics(0, 0);
+  graphics.lineStyle(0);
+  graphics.beginFill(0x000000, 1);
+  graphics.drawRect(0, 240, 320, 80);
+  graphics.endFill();
+  hud_bg = new Phaser.Rectangle(0,240, 320, 80);
+  //fps = game.add.text(10, 250, 'fps', {font: '8px Arial', fill: '#FFFFFF' });
+  infoText = game.add.text(10, 240, 'infoText', {font: '8px Arial', fill: '#FFFFFF'});
+  infoText.fixedToCamera=true;
+  //fps.fixedToCamera=true;
+
+  //setup buttons
+  buttons.push(game.add.button(10, 280, 'button1', function() {console.log('pressed')}, this));
+  buttons.push(game.add.button(40, 280, 'button2', function() {console.log('pressed')}, this));
+  buttons.push(game.add.button(70, 280, 'button3', function() {console.log('pressed')}, this));
+  buttons.push(game.add.button(100, 280, 'button4', function() {console.log('pressed')}, this));
+
+}
+
 game.state.add('Game', Lemmings, true);
+game.state.start('introScreen');
