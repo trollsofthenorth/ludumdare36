@@ -16,7 +16,7 @@ function range(start, end) {
 }
 
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'startingstate');
+var game = new Phaser.Game(320, 240, Phaser.CANVAS, 'startingstate');
 
 var Lemmings = function (game) {
     this.background = null;
@@ -39,6 +39,15 @@ Lemmings.prototype = {
 
         //this.physics.startSystem(Phaser.Physics.ARCADE);
         //this.physics.arcade.gravity.y = 200;
+
+        this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.game.scale.setMinMax(
+          window.innerWidth/2,
+          window.innerHeight/2,
+          window.innerWidth,
+          window.innerHeight);
+        this.game.pageAlignHorizontally = true;
+        this.game.pageAlignVertically = false;
 
     },
 
