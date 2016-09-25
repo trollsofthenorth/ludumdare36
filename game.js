@@ -69,8 +69,10 @@ introScreen.prototype = {
     startButton.anchor.setTo(0.5);
     startButton.x = game.width/2 - 50;
     startButton.y = game.height/2 + 50;
-    startButton['data']['style'] = { font: "bold 12px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" }
-    startButton['data']['value'] = this.game.add.text(10,10, "Start", startButton['data']['style']);
+    startButton['data']['color'] = '#fff';
+    startButton['data']['label'] = 'Start';
+    startButton['data']['style'] = { font: "bold 12px Arial", fill: startButton['data']['color'] = '#fff', boundsAlignH: "center", boundsAlignV: "middle" }
+    startButton['data']['value'] = this.game.add.text(10,10, startButton['data']['label'], startButton['data']['style']);
     startButton['data']['value'].anchor.setTo(0.5);
     startButton['data']['value'].x = startButton.x;
     startButton['data']['value'].y = startButton.y + 10;
@@ -80,8 +82,10 @@ introScreen.prototype = {
     musicButton.anchor.setTo(0.5);
     musicButton.x = game.width/2 + 50;
     musicButton.y = game.height/2 + 50;
-    musicButton['data']['style'] = { font: "bold 12px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-    musicButton['data']['value'] = this.game.add.text(10,10, "Music", musicButton['data']['style']);
+    musicButton['data']['color'] = '#fff';
+    musicButton['data']['label'] = 'Music';
+    musicButton['data']['style'] = { font: "bold 12px Arial", fill: musicButton['data']['color'], boundsAlignH: "center", boundsAlignV: "middle" };
+    musicButton['data']['value'] = this.game.add.text(10,10, musicButton['data']['label'], musicButton['data']['style']);
     musicButton['data']['value'].anchor.setTo(0.5);
     musicButton['data']['value'].x = musicButton.x;
     musicButton['data']['value'].y = musicButton.y + 10;
@@ -95,10 +99,10 @@ introScreen.prototype = {
   toggleMusic: function(button) {
     if (this.game.sound.volume == 0) {
       this.game.sound.volume = 1;
-      button['data']['style'].fill = "#fff";
+      button['data']['label'] = "Music On";
     } else {
       this.game.sound.volume = 0;
-      button['data']['style'].fill = "#999";
+      button['data']['label'] = "Music Off";
     }
   }
 }
