@@ -15,6 +15,73 @@ function range(start, end) {
 
 }
 
+/* OMG WAT ALAN */
+
+CloudPlatform = function (game, x, y, key, group) {
+    if (typeof group === 'undefined') { group = game.world; }
+    Phaser.Sprite.call(this, game, x, y, key);
+    game.physics.arcade.enable(this);
+    this.anchor.x = 0.5;
+    this.body.customSeparateX = true;
+    this.body.customSeparateY = true;
+    this.body.allowGravity = false;
+    this.body.immovable = true;
+    this.playerLocked = false;
+    group.add(this);
+};
+CloudPlatform.prototype = Object.create(Phaser.Sprite.prototype);
+CloudPlatform.prototype.constructor = CloudPlatform;
+
+
+var ActorState = {
+  walker : "walker",
+  shrugger : "shrugger",
+  exiter : "exiter",
+  faller : "faller",
+  parachuter : "parachuter",
+  blocker : "blocker",
+  climber : "climber",
+  climberover : "climberover",
+  builder : "builder",
+  basher : "basher",
+  digger : "digger",
+  miner : "miner",
+  dyer : "dyer",
+  drowner : "drowner",
+  exploder : "exploder"
+}
+
+
+Lemming = function (game, x, y, key, group) {
+    x = x || 0;
+    y = y || 0;
+    key = key || null;
+    frame = null;
+    if (typeof group === 'undefined') { group = game.world; }
+
+    Phaser.Sprite.call(this, game, x, y, key, frame);
+
+    state = ActorState.faller;
+    /**
+    * @property {number} type - The const type of this object.
+    * @readonly
+    */
+
+    /**
+    * @property {number} physicsType - The const physics body type of this object.
+    * @readonly
+    */
+    PIXI.Sprite.call(this, Phaser.Cache.DEFAULT);
+
+    Phaser.Component.Core.init.call(this, game, x, y, key, frame);
+
+};
+Lemming.prototype = Object.create(Phaser.Sprite.prototype);
+Lemming.prototype.constructor = Lemming;
+/* END OMG WAT ALAN */
+
+
+
 
 var game = new Phaser.Game(320, 240, Phaser.CANVAS, 'startingstate');
 
@@ -25,6 +92,8 @@ var Lemmings = function (game) {
     this.collision = null;
     this.emitter = null;
     this.player = null;
+
+    this.clouds = null;
 };
 
 var showDebug = true;
@@ -37,7 +106,7 @@ Lemmings.prototype = {
 
         this.game.world.setBounds(0, 0, 992, 480);
 
-        //this.physics.startSystem(Phaser.Physics.ARCADE);
+        this.physics.startSystem(Phaser.Physics.ARCADE);
         //this.physics.arcade.gravity.y = 200;
 
         this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -81,6 +150,9 @@ Lemmings.prototype = {
         this.collision.addToWorld();
 
 
+        this.lemmings = this.game.add.group();
+
+
         this.lemming = this.add.sprite(130,90,'lemming');
 
         this.lemming.alpha=1; // This makes the background transparent for the sprite.
@@ -93,7 +165,7 @@ Lemmings.prototype = {
         //this.lemming.animations.add('black2',range(44,47), 10, true);
         this.lemming.animations.add('blocker',range(48,63), 10, true);
         this.lemming.animations.add('climber',range(64,71), 10, true);
-        this.lemming.animations.add('climber-over',range(72,79), 10, true);
+        this.lemming.animations.add('climberover',range(72,79), 10, true);
         this.lemming.animations.add('builder',range(80,95), 10, true);
         this.lemming.animations.add('basher',range(96,127), 10, true);
         this.lemming.animations.add('digger',range(128,135), 10, true);
@@ -121,6 +193,10 @@ Lemmings.prototype = {
         this.cursors = game.input.keyboard.createCursorKeys();
 
 
+        this.clouds = this.game.add.physicsGroup();
+        var cloud1 = new CloudPlatform(this.game, 300, 450, 'player', this.clouds);
+        var cloud2 = new CloudPlatform(this.game, 800, 96, 'player', this.clouds);
+        this.clouds.callAll('start');
     },
 
     /**
@@ -214,8 +290,8 @@ Lemmings.prototype = {
 
       //this.player.body.velocity.x = 0;
 
-      this.actor_position_update(this.lemming);
-      this.actor_position_update(this.player);
+      //this.actor_position_update(this.lemming);
+      //this.actor_position_update(this.player);
 
     },
     collisionHandler: function(obj1, obj2) {
@@ -227,6 +303,8 @@ Lemmings.prototype = {
 
     render: function() {
         if(showDebug) {
+          this.game.debug.spriteInfo(this.cloud2, 0,10);
+          this.game.debug.body(this.cloud2);
           this.game.debug.spriteInfo(this.player, 32, 520);
           this.game.debug.bodyInfo(this.player, 32, 32);
           this.game.debug.body(this.player);
