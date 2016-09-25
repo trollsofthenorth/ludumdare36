@@ -51,7 +51,7 @@ var ActorState = {
   exploder : "exploder"
 }
 
-
+/*
 Lemming = function (game, x, y, key, group) {
     x = x || 0;
     y = y || 0;
@@ -62,15 +62,7 @@ Lemming = function (game, x, y, key, group) {
     Phaser.Sprite.call(this, game, x, y, key, frame);
 
     state = ActorState.faller;
-    /**
-    * @property {number} type - The const type of this object.
-    * @readonly
-    */
 
-    /**
-    * @property {number} physicsType - The const physics body type of this object.
-    * @readonly
-    */
     PIXI.Sprite.call(this, Phaser.Cache.DEFAULT);
 
     Phaser.Component.Core.init.call(this, game, x, y, key, frame);
@@ -78,6 +70,7 @@ Lemming = function (game, x, y, key, group) {
 };
 Lemming.prototype = Object.create(Phaser.Sprite.prototype);
 Lemming.prototype.constructor = Lemming;
+*/
 /* END OMG WAT ALAN */
 
 
@@ -194,8 +187,7 @@ Lemmings.prototype = {
 
 
         this.clouds = this.game.add.physicsGroup();
-        var cloud1 = new CloudPlatform(this.game, 300, 450, 'player', this.clouds);
-        var cloud2 = new CloudPlatform(this.game, 800, 96, 'player', this.clouds);
+        this.cloud2 = new CloudPlatform(this.game, 10, 10, 'player', this.clouds);
         this.clouds.callAll('start');
     },
 
@@ -304,7 +296,6 @@ Lemmings.prototype = {
     render: function() {
         if(showDebug) {
           this.game.debug.spriteInfo(this.cloud2, 0,10);
-          this.game.debug.body(this.cloud2);
           this.game.debug.spriteInfo(this.player, 32, 520);
           this.game.debug.bodyInfo(this.player, 32, 32);
           this.game.debug.body(this.player);
